@@ -58,7 +58,7 @@ Try our demo on [Demo-Dolphin](http://115.190.42.15:8888/dolphin/).
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/ByteDance/Dolphin.git
+   git clone https://github.com/helpself2005/Dolphin-FastAPI.git
    cd Dolphin
    ```
 
@@ -69,11 +69,7 @@ Try our demo on [Demo-Dolphin](http://115.190.42.15:8888/dolphin/).
 
 3. Download the pre-trained models using one of the following options:
 
-   **Option A: Original Model Format (config-based)**
-   
-   Download from [Baidu Yun](https://pan.baidu.com/s/15zcARoX0CTOHKbW8bFZovQ?pwd=9rpx) or [Google Drive](https://drive.google.com/drive/folders/1PQJ3UutepXvunizZEw-uGaQ0BCzf-mie?usp=sharing) and put them in the `./checkpoints` folder.
-
-   **Option B: Hugging Face Model Format**
+   **Hugging Face Model Format**
    
    Visit our Huggingface [model card](https://huggingface.co/ByteDance/Dolphin), or download model by:
    
@@ -95,17 +91,6 @@ Dolphin provides two inference frameworks with support for two parsing granulari
 
 #### Using Original Framework (config-based)
 
-```bash
-# Process a single document image
-python demo_page.py --config ./config/Dolphin.yaml --input_path ./demo/page_imgs/page_1.jpeg --save_dir ./results
-
-# Process all document images in a directory
-python demo_page.py --config ./config/Dolphin.yaml --input_path ./demo/page_imgs --save_dir ./results
-
-# Process with custom batch size for parallel element decoding
-python demo_page.py --config ./config/Dolphin.yaml --input_path ./demo/page_imgs --save_dir ./results --max_batch_size 8
-```
-
 #### Using Hugging Face Framework
 
 ```bash
@@ -121,18 +106,6 @@ python demo_page_hf.py --model_path ./hf_model --input_path ./demo/page_imgs --s
 
 ### 🧩 Element-level Parsing
 
-#### Using Original Framework (config-based)
-
-```bash
-# Process a single table image
-python demo_element.py --config ./config/Dolphin.yaml --input_path ./demo/element_imgs/table_1.jpeg --element_type table
-
-# Process a single formula image
-python demo_element.py --config ./config/Dolphin.yaml --input_path ./demo/element_imgs/line_formula.jpeg --element_type formula
-
-# Process a single text paragraph image
-python demo_element.py --config ./config/Dolphin.yaml --input_path ./demo/element_imgs/para_1.jpg --element_type text
-```
 
 #### Using Hugging Face Framework
 
@@ -146,6 +119,8 @@ python demo_element_hf.py --model_path ./hf_model --input_path ./demo/element_im
 # Process a single text paragraph image
 python demo_element_hf.py --model_path ./hf_model --input_path ./demo/element_imgs/para_1.jpg --element_type text
 ```
+
+#### Using Hugging Face Framework
 
 ## 🌟 Key Features
 

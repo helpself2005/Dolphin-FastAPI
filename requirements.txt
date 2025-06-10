@@ -9,3 +9,7 @@ torch==2.1.0
 torchvision==0.16.0
 transformers==4.47.0
 accelerate==1.6.0
+#add fastapi package
+uvicorn==0.34.0
+fastapi==0.111.0
+python-multipart==0.0.9

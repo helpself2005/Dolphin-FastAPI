@@ -7,78 +7,11 @@ import argparse
 import glob
 import os
 
-import torch
 from PIL import Image
-from transformers import AutoProcessor, VisionEncoderDecoderModel
 
+from dolphin import DOLPHIN
 from utils.utils import *
 
-
-class DOLPHIN:
-    def __init__(self, model_id_or_path):
-        """Initialize the Hugging Face model
-        
-        Args:
-            model_id_or_path: Path to local model or Hugging Face model ID
-        """
-        # Load model from local path or Hugging Face hub
-        self.processor = AutoProcessor.from_pretrained(model_id_or_path)
-        self.model = VisionEncoderDecoderModel.from_pretrained(model_id_or_path)
-        self.model.eval()
-        
-        # Set device and precision
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.model.to(self.device)
-        self.model = self.model.half()  # Always use half precision by default
-        
-        # set tokenizer
-        self.tokenizer = self.processor.tokenizer
-        
-    def chat(self, prompt, image):
-        """Process an image with the given prompt
-        
-        Args:
-            prompt: Text prompt to guide the model
-            image: PIL Image to process
-            
-        Returns:
-            Generated text from the model
-        """
-        # Prepare image
-        pixel_values = self.processor(image, return_tensors="pt").pixel_values
-        pixel_values = pixel_values.half()
-            
-        # Prepare prompt
-        prompt = f"<s>{prompt} <Answer/>"
-        prompt_ids = self.tokenizer(
-            prompt, 
-            add_special_tokens=False, 
-            return_tensors="pt"
-        ).input_ids.to(self.device)
-        
-        decoder_attention_mask = torch.ones_like(prompt_ids)
-        
-        # Generate text
-        outputs = self.model.generate(
-            pixel_values=pixel_values.to(self.device),
-            decoder_input_ids=prompt_ids,
-            decoder_attention_mask=decoder_attention_mask,
-            min_length=1,
-            max_length=4096,
-            pad_token_id=self.tokenizer.pad_token_id,
-            eos_token_id=self.tokenizer.eos_token_id,
-            use_cache=True,
-            bad_words_ids=[[self.tokenizer.unk_token_id]],
-            return_dict_in_generate=True,
-            do_sample=False,
-            num_beams=1,
-        )
-        
-        # Process the output
-        sequence = self.tokenizer.batch_decode(outputs.sequences, skip_special_tokens=False)[0]
-        sequence = sequence.replace(prompt, "").replace("<pad>", "").replace("</s>", "").strip()
-        
-        return sequence
 
 def process_element(image_path, model, element_type, save_dir=None):
     """Process a single element image (text, table, formula)
@@ -108,7 +41,7 @@ def process_element(image_path, model, element_type, save_dir=None):
         label = "text"
     
     # Process the element
-    result = model.chat(prompt, pil_image)
+    result = model.chat_element(prompt, pil_image)
     
     # Create recognition result in the same format as the document parser
     recognition_result = [
